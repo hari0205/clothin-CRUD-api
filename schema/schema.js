@@ -3,18 +3,18 @@ const {Schema,model} = require("mongoose")
 
 const UserSchema = new Schema({
     name: {
-        type: "string",
-        required : true,
+        type: String,
+        required : true
     },
 
     email:{
-        type: "string",
+        type: String,
         unique : true,
-        required : true,
+        required : true
     },
 
     password:{
-        type: "string",
+        type: String,
         required : true
     },
 
@@ -25,3 +25,49 @@ const UserSchema = new Schema({
 })
 
 
+const AdminSchema = new Schema({
+    name: {
+        type: String,
+        required : true
+    },
+
+    email:{
+        type: String,
+        unique : true,
+        required : true
+    },
+
+    password:{
+        type: String,
+        required : true
+    },
+
+    access:{
+        type: String,
+        default: "Admin"
+    }
+})
+
+
+const ProductSchema = new Schema({
+    name:{
+        type:String,
+        required:true
+    },
+
+    category:{
+        type:String,
+        required:true
+    },
+
+    price:{
+        type:Number,
+        default:0
+    },
+
+
+})
+
+model("User", UserSchema)
+model("Admin", AdminSchema)
+model("Cloths", ProductSchema)
