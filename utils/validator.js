@@ -12,3 +12,23 @@ const validateSignup =(data)=>{
 
     return schema.validate(data)
 }
+
+const verifyToken = (req, res, next) => {
+    const token = req.header("authtoken");
+    if (token == null) return res.status(401).json({ error: "Access denied" });
+    try {
+      const verified = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+      console.log("VERIFIED : ", verified.name);
+  
+      req.user = verified;
+      next();
+    }
+    catch (err) {
+      res.status(400).json({ error: "Invalid" });
+    }
+  }
+
+module.exports={
+    validateSignup,
+    verifyToken
+}
