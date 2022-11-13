@@ -2,7 +2,7 @@ const router = require("express").Router();
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const validator = require("../../utils/validator")
-const User = require("../../schema/schemaz")
+const User = require("../../schema/schema") .UserSchema//check schema
 
 router.post("/signup", async (req, res) => {
     //Check input validations
@@ -28,3 +28,30 @@ router.post("/signup", async (req, res) => {
 
 
 })
+
+
+router.post("/signin", async (req, res) => {
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) {
+      return res.status(400).json({ error: "Wrong/Invalid email." });
+    }
+    const validPassword = await bcrypt.compare(req.body.password, user.password);
+    if (!validPassword) {
+      return res.status(400).json({ error: "Incorrect Password" });
+    }
+  
+    //create JWT
+    const token = jwt.sign(
+      {
+        name: user.name,
+        id: user._id,
+        role : user.role
+      },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: "24h" }
+    );
+  
+    res.header("authtoken", token).json({ accessToken: token });
+  });
+  
+  module.exports = router;
